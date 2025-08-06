@@ -1,5 +1,6 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
+import { createUser } from "@/lib/appwrite";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
 import { Alert, Text, View } from "react-native";
@@ -14,7 +15,9 @@ const SignUp = () => {
   });
 
   const submit = async () => {
-    if (!Form.name || !Form.email || !Form.password)
+    const { name, email, password } = Form;
+
+    if (!name || !email || !password)
       return Alert.alert(
         "Error ",
         "Please Enter a valid Name, Email and Password"
@@ -23,11 +26,13 @@ const SignUp = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate a sign-in process usin appwrite
-      Alert.alert("Success", "User signed Up successfully!");
+      // call the createUser function from appwrite to register the user
+      await createUser({ email, password, name });
+
+      // Alert.alert("Success", "User signed Up successfully!");
       // Redirect to home or dashboard after successful sign-in
       router.replace("/");
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", error.message || "An error occurred during sign-Up");
     } finally {
       setIsSubmitting(false);
@@ -57,7 +62,7 @@ const SignUp = () => {
         label="Password"
         secureTextEntry={true}
       />
-      <CustomButton title="Sign Un" isLoading={isSubmitting} onPress={submit} />
+      <CustomButton title="Sign Up" isLoading={isSubmitting} onPress={submit} />
 
       <View className=" flex justify-center gap-2 mt-5 flex-row">
         <Text className="base-regular text-gray-100">
