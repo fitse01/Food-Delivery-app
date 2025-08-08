@@ -1,10 +1,10 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
 import { signIn } from "@/lib/appwrite";
+import * as Sentry from "@sentry/react-native";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Text, View } from "react-native";
-
+import { Alert, Button, Text, View } from "react-native";
 const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,13 +22,14 @@ const SignIn = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate a sign-in process usin appwrite
+      // Simulate a sign-in process using appwrite
       await signIn({ email, password });
       Alert.alert("Success", "User signed in successfully!");
       // Redirect to home or dashboard after successful sign-in
       router.replace("/");
     } catch (error: any) {
       Alert.alert("Error", error.message || "An error occurred during sign-in");
+      Sentry.captureException(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -61,6 +62,13 @@ const SignIn = () => {
           Sign Up{" "}
         </Link>
       </View>
+
+      <Button
+        title="Try!"
+        onPress={() => {
+          Sentry.captureException(new Error("First error"));
+        }}
+      />
     </View>
   );
 };
