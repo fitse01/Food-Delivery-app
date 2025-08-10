@@ -6,7 +6,12 @@ export const appwriteConfig = {
     projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID || "688c77fc00079e445344",
     platform: "com.fitsum.foodordering ",
     databaseId: "688ca1b10020a4d1923e",
+    bucketId: "6898345300176ca4474e",
     userCollectionId: "688ca21f0025bd475f14",
+    categoriesCollectionId: "689821de00397dbc7640",
+    menuCollectionId: "6898250500137d919c7e",
+    customizasionsCollectionId: "68982e1b0029bb780932",
+    menuCustomizationCollectionId: "689831a40021384ce1fd",
 }
 
 
