@@ -1,5 +1,5 @@
 import { CreateUserParams, SignInParams } from "@/type";
-import { Account, Avatars, Client, Databases, ID, Query } from "react-native-appwrite";
+import { Account, Avatars, Client, Databases, ID, Query, Storage } from "react-native-appwrite";
 
 export const appwriteConfig = {
     endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || "https://nyc.cloud.appwrite.io/v1",
@@ -10,8 +10,8 @@ export const appwriteConfig = {
     userCollectionId: "688ca21f0025bd475f14",
     categoriesCollectionId: "689821de00397dbc7640",
     menuCollectionId: "6898250500137d919c7e",
-    customizasionsCollectionId: "68982e1b0029bb780932",
-    menuCustomizationCollectionId: "689831a40021384ce1fd",
+    customizationsCollectionId: "68982e1b0029bb780932",
+    menuCustomizationsCollectionId: "689831a40021384ce1fd",
 }
 
 
@@ -24,7 +24,7 @@ client
 
 export const account = new Account(client);
 export const databases = new Databases(client);
-// export const storage = new Storage(client);
+export const storage = new Storage(client);
 
 const avatars = new Avatars(client);
 
