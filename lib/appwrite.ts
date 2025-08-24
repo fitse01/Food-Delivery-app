@@ -1,5 +1,5 @@
 import { CreateUserParams, GetMenuParams, SignInParams } from "@/type";
-import { Account, Avatars, Client, Databases, ID, Query, Storage } from "react-native-appwrite";
+import { Account, Avatars, Client, Databases, Functions, ID, Query, Storage } from "react-native-appwrite";
 
 export const appwriteConfig = {
     endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || "https://nyc.cloud.appwrite.io/v1",
@@ -12,6 +12,7 @@ export const appwriteConfig = {
     menuCollectionId: "6898250500137d919c7e",
     customizationsCollectionId: "68982e1b0029bb780932",
     menuCustomizationsCollectionId: "689831a40021384ce1fd",
+    paymentsCollectionId: "68a6a209000c4fbb0cab"
 }
 
 
@@ -25,6 +26,8 @@ client
 export const account = new Account(client);
 export const databases = new Databases(client);
 export const storage = new Storage(client);
+export const functions = new Functions(client);
+
 
 const avatars = new Avatars(client);
 
@@ -107,3 +110,49 @@ export const getCategories = async () => {
         throw new Error(e as string);
     }
 }
+
+
+
+
+// ✅ Create Payment Intent
+export const createPaymentIntent = async ({
+    amount,
+    currency = "usd",
+    userId,
+    items,
+}: {
+    amount: number;
+    currency?: string;
+    userId: string;
+    items: any[];
+}) => {
+    try {
+        const execution = await functions.createExecution(
+            appwriteConfig.createPaymentIntentFnId,
+            JSON.stringify({ amount, currency, userId, items }),
+            false // async? false = wait for response
+        );
+
+        const res = JSON.parse(execution.responseBody);
+        if (!res.clientSecret) throw new Error("Failed to create payment intent");
+        return res.clientSecret;
+    } catch (e) {
+        console.error("createPaymentIntent error:", e);
+        throw e;
+    }
+};
+
+// ✅ Optional: Get all payments for a user
+export const getPayments = async (userId: string) => {
+    try {
+        const payments = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.paymentsCollectionId,
+            [Query.equal("userId", userId)]
+        );
+        return payments.documents;
+    } catch (e) {
+        console.error("getPayments error:", e);
+        throw e;
+    }
+};
